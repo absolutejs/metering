@@ -1,5 +1,13 @@
 # @absolutejs/metering changelog
 
+## 0.2.0 — 2026-07-14
+
+- Add first-class `ai` events with normalized input, output, prompt-cache,
+  duration, agent-turn, tool-call, stop-reason, and optional integer-micro cost
+  fields.
+- Add cumulative and rolling AI request, token, and monetary-cost budgets.
+- Restore older snapshots safely by filling newly introduced usage counters.
+
 ## 0.1.0 — 2026-05-29
 
 Substrate-deepening pass. Backwards-compatible — function-shaped sinks and
@@ -36,7 +44,7 @@ the 0.0.1 cumulative-budget shape are unchanged; new surface is additive.
   OR a `{ ingest, flush?, close? }` object. On `meter.dispose()`, every
   sink's `flush()` is awaited (in parallel across sinks, serial between
   flush + close), THEN every sink's `close()`. A throwing flush is logged
-  + swallowed; later sinks still flush.
+  - swallowed; later sinks still flush.
 - **`meter.snapshot()` + `meter.restore(snapshot)`.** Serializable
   point-in-time state. After a shard restart, restore lets the meter
   resume per-tenant counters (the bill doesn't reset to zero). Snapshot
