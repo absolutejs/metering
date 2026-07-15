@@ -1,5 +1,11 @@
 # @absolutejs/metering changelog
 
+## 0.3.0 — 2026-07-15
+
+- Add `adopt` and `restored` process lifecycle events. Both reset the
+  cumulative CPU observation baseline after a supervisor restart or checkpoint
+  restore without incrementing the tenant's real spawn count.
+
 ## 0.2.0 — 2026-07-14
 
 - Add first-class `ai` events with normalized input, output, prompt-cache,

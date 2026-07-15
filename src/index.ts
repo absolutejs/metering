@@ -43,7 +43,9 @@ export type HandlerMeterEvent = {
 };
 
 export type ProcessMeterEventType =
+  | "adopt"
   | "spawn"
+  | "restored"
   | "ready"
   | "idle-kill"
   | "lru-evict"
@@ -566,9 +568,14 @@ export const createMeter = (options: MeterOptions = {}): Meter => {
       // process event
       if (event.transition === "spawn") {
         usage.spawns += 1;
-        // A new process resets the cumulative-cpu baseline.
-        lastProcessCpu.delete(event.tenant);
       }
+      if (
+        event.transition === "adopt" ||
+        event.transition === "restored" ||
+        event.transition === "spawn"
+      )
+        // A new or newly observed process resets the cumulative-cpu baseline.
+        lastProcessCpu.delete(event.tenant);
       if (event.transition === "exit") {
         // Clear baseline so the next spawn's first observation is treated as a baseline, not a delta.
         lastProcessCpu.delete(event.tenant);

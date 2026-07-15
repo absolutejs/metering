@@ -152,8 +152,9 @@ kinds can be set on the same tenant; `allow()` is `false` if any rule trips.
 `@absolutejs/runtime@0.1.0` emits `{ type: 'observation', cpuMs, rssBytes }` on
 a configurable interval. The meter treats `cpuMs` as CUMULATIVE since spawn and
 charges the delta since the previous observation. A `process` event of
-`transition === 'spawn'` or `'exit'` resets the baseline so a fresh process
-doesn't double-charge.
+`transition === 'spawn'`, `'adopt'`, `'restored'`, or `'exit'` resets the
+baseline so a fresh or newly supervised process doesn't double-charge. Only a
+real `spawn` increments the spawn counter.
 
 ### Hibernation accounting
 

@@ -386,6 +386,39 @@ describe("observation events (runtime 0.1.0 shape)", () => {
     expect(meter.usage("t1")!.processCpuMs).toBe(800 + 200);
   });
 
+  test("adoption resets CPU baseline without charging another spawn", () => {
+    const meter = createMeter({ clock: tick() });
+    meter.record({
+      at: 1000,
+      tenant: "t1",
+      transition: "spawn",
+      type: "process",
+    });
+    meter.record({
+      at: 1500,
+      cpuMs: 800,
+      rssBytes: 100_000_000,
+      tenant: "t1",
+      type: "observation",
+    });
+    meter.record({
+      at: 2000,
+      tenant: "t1",
+      transition: "adopt",
+      type: "process",
+    });
+    meter.record({
+      at: 2500,
+      cpuMs: 1000,
+      rssBytes: 100_000_000,
+      tenant: "t1",
+      type: "observation",
+    });
+
+    expect(meter.usage("t1")!.processCpuMs).toBe(1800);
+    expect(meter.usage("t1")!.spawns).toBe(1);
+  });
+
   test("processRssBytesPeak tracks the high-water mark", () => {
     const meter = createMeter({ clock: tick() });
     meter.record({
