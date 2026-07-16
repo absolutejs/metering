@@ -79,6 +79,20 @@ meter.record({
   stopReason: finish.reason,
 });
 
+// Inside a hosted workload, hand handler/request events to the authenticated
+// host-local collector. The PaaS injects this endpoint, token, and per-process
+// source id; no tenant id is accepted from application code.
+import { createWorkloadMeterReporter } from "@absolutejs/metering/reporter";
+import { workloadMeterElysia } from "@absolutejs/metering/elysia";
+
+const reporter = createWorkloadMeterReporter({
+  endpoint: process.env.ABSOLUTE_METER_ENDPOINT!,
+  sourceId: process.env.ABSOLUTE_METER_SOURCE_ID!,
+  token: process.env.ABSOLUTE_METER_TOKEN!,
+});
+const app = new Elysia().use(workloadMeterElysia({ reporter }));
+syncEngine.handlerMetrics = reporter.handlerMetrics;
+
 // In your request handler, gate on the meter:
 if (!meter.allow(tenantId))
   return new Response("Quota exceeded", { status: 429 });

@@ -1,5 +1,12 @@
 # @absolutejs/metering changelog
 
+## 0.4.0 — 2026-07-16
+
+- Add a bounded, batched workload reporter with monotonic source cursors.
+- Add an Elysia plugin that reports one terminal event for every request,
+  including error paths, without capturing request or response bodies.
+- Add a direct `handlerMetrics` adapter for `@absolutejs/sync`.
+
 ## 0.3.0 — 2026-07-15
 
 - Add `adopt` and `restored` process lifecycle events. Both reset the
