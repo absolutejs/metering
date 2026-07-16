@@ -1,6 +1,6 @@
 {
   "name": "@absolutejs/metering",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Per-tenant cost-attribution + budget enforcement for multi-tenant runtimes. Consumes handlerMetrics from @absolutejs/sync and spawn/idle/exit events from @absolutejs/runtime; rolls up CPU-ms, bytes egress, hibernation-GB-seconds per tenant; trips a circuit breaker when a per-tenant budget is exceeded.",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "circuit-breaker"
   ],
   "scripts": {
-    "build": "rm -rf dist && bun build src/index.ts src/reporter.ts src/elysia.ts src/manifest.ts --root ./src --outdir dist --sourcemap --target=bun && tsc --project tsconfig.build.json && absolute-manifest emit",
+    "build": "rm -rf dist && bun build src/index.ts src/reporter.ts src/elysia.ts src/manifest.ts --root ./src --outdir dist --sourcemap --target=bun --external elysia && tsc --project tsconfig.build.json && absolute-manifest emit",
     "test": "bun test tests/",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"./**/*.{ts,json,md}\"",
