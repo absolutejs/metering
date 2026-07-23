@@ -1,6 +1,6 @@
 {
   "name": "@absolutejs/metering",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Per-tenant cost-attribution + budget enforcement for multi-tenant runtimes. Consumes handlerMetrics from @absolutejs/sync and spawn/idle/exit events from @absolutejs/runtime; rolls up CPU-ms, bytes egress, hibernation-GB-seconds per tenant; trips a circuit breaker when a per-tenant budget is exceeded.",
   "repository": {
     "type": "git",
@@ -80,10 +80,10 @@
     "README.md"
   ],
   "dependencies": {
-    "@absolutejs/manifest": "^0.1.0",
+    "@absolutejs/manifest": "^0.4.0",
     "@sinclair/typebox": "^0.34.0"
   },
   "absolutejs": {
-    "manifestContract": 1
+    "manifestContract": 2
   }
 }

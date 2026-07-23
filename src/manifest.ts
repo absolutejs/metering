@@ -112,7 +112,7 @@ const rollingBudgetSchema = Type.Object(
 );
 
 export const manifest = defineManifest<MeterOptions, Meter>()({
-  contract: 1,
+  contract: 2,
   identity: {
     accent: "#8b5cf6",
     category: "infrastructure",
@@ -161,6 +161,13 @@ export const manifest = defineManifest<MeterOptions, Meter>()({
   tools: {
     budget_status: tool.runtime({
       annotations: { readOnlyHint: true },
+      authorization: {
+        approval: "never",
+        audience: "admin",
+        effects: ["read"],
+        requiredScopes: ["metering:read"],
+        resource: { idField: "tenant", type: "tenant-meter" },
+      },
       description:
         "One tenant's budget position: configured cumulative and rolling budgets, current usage, and whether the circuit breaker is tripped.",
       handler: ({ tenant }, meter) =>
@@ -176,6 +183,12 @@ export const manifest = defineManifest<MeterOptions, Meter>()({
     }),
     list_tenants: tool.runtime({
       annotations: { readOnlyHint: true },
+      authorization: {
+        approval: "never",
+        audience: "admin",
+        effects: ["read"],
+        requiredScopes: ["metering:read"],
+      },
       description:
         "List every tenant id that has recorded usage since the meter started (or since its last restore).",
       handler: (_input, meter) => {
@@ -189,6 +202,15 @@ export const manifest = defineManifest<MeterOptions, Meter>()({
     }),
     reset_breaker: tool.runtime({
       annotations: { idempotentHint: true },
+      authorization: {
+        approval: "always",
+        audience: "admin",
+        effects: ["write"],
+        idempotency: { mode: "resource" },
+        requiredScopes: ["metering:reset"],
+        resource: { idField: "tenant", type: "tenant-meter" },
+        reversible: false,
+      },
       description:
         "Re-close a tripped tenant's circuit breaker so its traffic is allowed again. Usage totals are kept — the breaker re-trips on the next recorded event if a cumulative budget is still exceeded.",
       handler: ({ tenant }, meter) => {
@@ -202,6 +224,13 @@ export const manifest = defineManifest<MeterOptions, Meter>()({
     }),
     tenant_usage: tool.runtime({
       annotations: { readOnlyHint: true },
+      authorization: {
+        approval: "never",
+        audience: "admin",
+        effects: ["read"],
+        requiredScopes: ["metering:read"],
+        resource: { idField: "tenant", type: "tenant-meter" },
+      },
       description:
         "One tenant's usage roll-up: requests, errors, infrastructure usage, AI tokens/cost, peak heap/RSS, and spawn count.",
       handler: ({ tenant }, meter) => {
