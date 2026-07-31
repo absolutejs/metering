@@ -734,3 +734,14 @@ export const createMeter = (options: MeterOptions = {}): Meter => {
     },
   };
 };
+
+// -----------------------------------------------------------------------------
+// Durable persistence
+// -----------------------------------------------------------------------------
+
+export {
+  createDurableSink,
+  type DurableSink,
+  type DurableSinkOptions,
+  type DurableSinkWriter,
+} from "./durableSink";
