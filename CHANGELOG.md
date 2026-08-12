@@ -1,5 +1,11 @@
 # @absolutejs/metering changelog
 
+## 0.6.1 — 2026-08-12
+
+- Record request ingress: `HandlerMeterEvent.bytesIn`, wire `bytes_in`, and a
+  new `Usage.bytesIngress` accumulator. The Elysia plugin reports the request
+  `content-length` when present; bodies are never captured.
+
 ## 0.4.1 — 2026-07-16
 
 - Keep the optional Elysia peer external in the published plugin artifact.

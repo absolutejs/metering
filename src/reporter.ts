@@ -4,6 +4,7 @@ const DEFAULT_MAX_PENDING = 1_000;
 
 export type WorkloadMeterInput = {
   at?: number;
+  bytesIn?: number;
   bytesOut?: number;
   cpuMs?: number;
   durationMs: number;
@@ -17,6 +18,7 @@ export type WorkloadMeterInput = {
 };
 
 export type WorkloadMeterWireEvent = {
+  bytes_in?: number;
   bytes_out?: number;
   cpu_ms: number;
   cursor: number;
@@ -35,6 +37,7 @@ export type WorkloadMeterReporter = {
   dispose: () => Promise<void>;
   flush: () => Promise<void>;
   handlerMetrics: (record: {
+    bytesIn?: number;
     bytesOut?: number;
     cpuMs: number;
     durationMs: number;
@@ -148,6 +151,9 @@ export const createWorkloadMeterReporter = (
       throw new Error("Workload meter pending-event limit reached");
     cursor += 1;
     pending.push({
+      ...(input.bytesIn === undefined
+        ? {}
+        : { bytes_in: finiteNonNegative(input.bytesIn) }),
       ...(input.bytesOut === undefined
         ? {}
         : { bytes_out: finiteNonNegative(input.bytesOut) }),
@@ -179,6 +185,7 @@ export const createWorkloadMeterReporter = (
     flush,
     handlerMetrics: (record_) =>
       record({
+        bytesIn: record_.bytesIn,
         bytesOut: record_.bytesOut,
         cpuMs: record_.cpuMs,
         durationMs: record_.durationMs,

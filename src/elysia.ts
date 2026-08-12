@@ -34,7 +34,13 @@ export const workloadMeterElysia = (options: WorkloadMeterElysiaOptions) => {
       starts.delete(context.request);
       const status = statusCode(context.set?.status);
       const url = new URL(context.request.url);
+      const contentLength = Number(
+        context.request.headers.get("content-length") ?? "",
+      );
       options.reporter.record({
+        ...(Number.isFinite(contentLength) && contentLength > 0
+          ? { bytesIn: contentLength }
+          : {}),
         durationMs: performance.now() - startedAt,
         kind: "request",
         method: context.request.method,

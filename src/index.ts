@@ -34,6 +34,8 @@ export type HandlerMeterEvent = {
   heapBytes?: number;
   /** Bytes the handler returned to its caller (response payload). */
   bytesOut?: number;
+  /** Bytes the caller sent in (request payload). */
+  bytesIn?: number;
   /** `true` on success; `false` if the handler threw. */
   ok: boolean;
   /** Error name on failure (e.g. `TimeoutError`, `MemoryLimitError`). */
@@ -129,6 +131,8 @@ export type Usage = {
   durationMs: number;
   /** Sum of `bytesOut` across all handler events. */
   bytesEgress: number;
+  /** Sum of `bytesIn` across all handler events. */
+  bytesIngress: number;
   /** Sum of `hibernationGbSeconds` across all process events. */
   hibernationGbSeconds: number;
   /** Max `heapBytes` observed across all handler events. */
@@ -165,6 +169,7 @@ const freshUsage = (): Usage => ({
   aiToolCalls: 0,
   aiTurns: 0,
   bytesEgress: 0,
+  bytesIngress: 0,
   cpuMs: 0,
   durationMs: 0,
   errors: 0,
@@ -523,6 +528,7 @@ export const createMeter = (options: MeterOptions = {}): Meter => {
       usage.cpuMs += event.cpuMs;
       recordRolling(event.tenant, "cpuMs", event.cpuMs, at);
       usage.durationMs += event.durationMs;
+      if (event.bytesIn !== undefined) usage.bytesIngress += event.bytesIn;
       if (event.bytesOut !== undefined) {
         usage.bytesEgress += event.bytesOut;
         recordRolling(event.tenant, "bytesEgress", event.bytesOut, at);
