@@ -24,11 +24,11 @@ export const workloadMeterElysia = (options: WorkloadMeterElysiaOptions) => {
   const starts = new WeakMap<Request, number>();
 
   return new Elysia({ name: "@absolutejs/metering/elysia" })
-		.request(async (context) => {
+		.onRequest(async (context) => {
       if (options.exclude && (await options.exclude(context))) return;
       starts.set(context.request, performance.now());
     })
-		.afterResponse((context) => {
+		.onAfterResponse((context) => {
       const startedAt = starts.get(context.request);
       if (startedAt === undefined) return;
       starts.delete(context.request);
